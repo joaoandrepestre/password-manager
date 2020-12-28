@@ -29,7 +29,7 @@ const genPass = (master: string): string => {
 switch (mode) {
     case 'generate':
     case 'g':
-        hiddenQuestion('Master password: ')
+        hiddenQuestion('Master password: ', true)
             .then(master => {
                 console.log(`Generated password for key ${key}: ${genPass(master)}`);
                 exit(0);
@@ -37,16 +37,17 @@ switch (mode) {
         break;
     case 'password-for':
     case 'p':
-        hiddenQuestion('Master password: ')
+        hiddenQuestion('Master password: ', true)
             .then(master => {
                 passwordFile.readPasswordFile(passwordsPath, master);
                 let pass = passwordFile.getPasswordForKey(key);
                 if (pass === '') {
-                    rl.question(`No password defined for key ${key}. Would you like to generate one?(y/n)`, (answer: string) => {
-                        if (answer === 'y') console.log(`Generated password for key ${key}: ${genPass(master)}`);
-                        else console.log('No password generated');
-                        exit(0);
-                    });
+                    hiddenQuestion(`No password defined for key ${key}. Would you like to generate one? (y/n) `, false)
+                        .then(answer => {
+                            if (answer === 'y') console.log(`Generated password for key ${key}: ${genPass(master)}`);
+                            else console.log('No password generated');
+                            exit(0);
+                        });
                 } else {
                     console.log(`Generated password for key ${key}: ${pass}`);
                     exit(0);

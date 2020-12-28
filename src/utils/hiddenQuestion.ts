@@ -1,6 +1,6 @@
 import * as readline from 'readline';
 
-export const hiddenQuestion = (query: string): Promise<string> => {
+export const hiddenQuestion = (query: string, hidden: boolean): Promise<string> => {
     return new Promise((resolve, reject) => {
         const rl: readline.Interface = readline.createInterface({
             input: process.stdin,
@@ -16,6 +16,9 @@ export const hiddenQuestion = (query: string): Promise<string> => {
                     stdin.pause();
                     break;
                 default:
+                    if (!hidden) {
+                        query += schar;
+                    }
                     process.stdout.clearLine(0);
                     readline.cursorTo(process.stdout, 0);
                     process.stdout.write(query);
